@@ -1,34 +1,93 @@
+import time
 import streamlit as st
 
 st.set_page_config(page_title="지수법칙 퀴즈", page_icon="📘", layout="centered")
 
 st.markdown("""
 <style>
-.block-container {max-width: 820px; padding-top: 2rem; padding-bottom: 2rem;}
-.option-btn button {
-    width: 100%;
-    height: 54px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 12px;
-}
-.option-row {
-    padding: 10px 0 14px 0;
-    border-bottom: 1px solid #eee;
+.block-container {
+    max-width: 900px;
+    padding-top: 1.2rem;
+    padding-bottom: 2rem;
 }
 .score-box {
-    padding: 14px 18px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+.score-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    opacity: 0.9;
+}
+.score-value {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 0.2rem;
+    color: #facc15;
+}
+.progress-box {
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.question-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 1.2rem 1.2rem 0.8rem 1.2rem;
+    margin-bottom: 1rem;
+}
+.feedback-ok {
+    background: #ecfdf5;
+    border: 2px solid #86efac;
+    color: #166534;
+    padding: 1rem;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-top: 1rem;
+}
+.feedback-no {
+    background: #fef2f2;
+    border: 2px solid #fca5a5;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-top: 1rem;
+}
+.small-guide {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+}
+div.stButton > button {
+    width: 100%;
+    min-height: 56px;
+    font-size: 1.15rem;
+    font-weight: 800;
     border-radius: 14px;
-    background: #f6f7fb;
-    border: 1px solid #e6e8ef;
-    margin-bottom: 18px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 questions = [
     {
-        "text": "2^3 \\times 2^4 을 간단히 하면?",
+        "text": "2^3 × 2^4 을 간단히 하면?",
         "latex": r"2^3 \times 2^4",
         "options": [r"2^{12}", r"2^7", r"2^1", r"4^7"],
         "answer": r"2^7",
@@ -42,21 +101,21 @@ questions = [
         "explanation": "거듭제곱의 거듭제곱은 지수를 곱합니다. 2×3=6"
     },
     {
-        "text": "y^{10} \\div y^2 을 간단히 하면?",
+        "text": "y^{10} \div y^2 을 간단히 하면?",
         "latex": r"y^{10} \div y^2",
         "options": [r"y^{12}", r"y^5", r"y^8", r"y^{20}"],
         "answer": r"y^8",
-        "explanation": "나눗셈은 지수를 뺍니다. 10-2=8"
+        "explanation": "밑이 같을 때 나눗셈은 지수를 뺍니다. 10-2=8"
     },
     {
         "text": "(ab)^4 를 간단히 하면?",
         "latex": r"(ab)^4",
         "options": [r"ab^4", r"a^4b", r"a^4b^4", r"4ab"],
         "answer": r"a^4b^4",
-        "explanation": "괄호 안의 각 항에 4제곱을 적용합니다."
+        "explanation": "괄호 안의 각 문자에 지수 4를 곱해 줍니다."
     },
     {
-        "text": "\\left(\\frac{x}{y}\\right)^3 을 간단히 하면?",
+        "text": "\left(\frac{x}{y}\right)^3 을 간단히 하면?",
         "latex": r"\left(\frac{x}{y}\right)^3",
         "options": [r"\frac{x}{y^3}", r"\frac{x^3}{y}", r"\frac{x^3}{y^3}", r"xy^3"],
         "answer": r"\frac{x^3}{y^3}",
@@ -64,79 +123,96 @@ questions = [
     },
 ]
 
-if "index" not in st.session_state:
-    st.session_state.index = 0
 if "score" not in st.session_state:
     st.session_state.score = 0
-if "selected" not in st.session_state:
-    st.session_state.selected = None
-if "submitted" not in st.session_state:
-    st.session_state.submitted = False
+if "index" not in st.session_state:
+    st.session_state.index = 0
+if "wrong_questions" not in st.session_state:
+    st.session_state.wrong_questions = set()
+if "finished" not in st.session_state:
+    st.session_state.finished = False
 
-def choose(option):
-    st.session_state.selected = option
+def reset_quiz():
+    st.session_state.score = 0
+    st.session_state.index = 0
+    st.session_state.wrong_questions = set()
+    st.session_state.finished = False
+    st.rerun()
 
-def next_question():
-    if st.session_state.index < len(questions) - 1:
-        st.session_state.index += 1
-        st.session_state.selected = None
-        st.session_state.submitted = False
+def check_answer(selected_option: str):
+    q = questions[st.session_state.index]
+    idx = st.session_state.index
+
+    if selected_option == q["answer"]:
+        gain = 0 if idx in st.session_state.wrong_questions else 5
+        st.session_state.score += gain
+
+        if gain == 5:
+            msg = "정답입니다! +5점"
+        else:
+            msg = "정답입니다! 이 문제는 이미 틀려서 점수는 추가되지 않습니다."
+
+        st.markdown(f'<div class="feedback-ok">{msg}</div>', unsafe_allow_html=True)
+        st.caption(f"해설: {q['explanation']}")
+        time.sleep(1.0)
+
+        if st.session_state.index < len(questions) - 1:
+            st.session_state.index += 1
+            st.rerun()
+        else:
+            st.session_state.finished = True
+            st.rerun()
     else:
-        st.session_state.index = len(questions)
-
-if st.session_state.index >= len(questions):
-    st.title("🎉 퀴즈 완료")
-    st.markdown(f"<div class='score-box'><h3>최종 점수: {st.session_state.score}점</h3></div>", unsafe_allow_html=True)
-    if st.button("다시 시작하기"):
-        st.session_state.index = 0
-        st.session_state.score = 0
-        st.session_state.selected = None
-        st.session_state.submitted = False
+        st.session_state.score -= 5
+        st.session_state.wrong_questions.add(idx)
+        st.markdown('<div class="feedback-no">다시 풀어봅시다. -5점</div>', unsafe_allow_html=True)
+        st.caption(f"힌트: {q['explanation']}")
+        time.sleep(2.0)
         st.rerun()
+
+if st.session_state.finished:
+    st.markdown(
+        f'<div class="score-box"><div class="score-title">최종 점수</div><div class="score-value">{st.session_state.score}</div></div>',
+        unsafe_allow_html=True
+    )
+    st.success("퀴즈를 모두 마쳤습니다!")
+    if st.session_state.score >= 20:
+        st.balloons()
+        st.write("아주 잘했어요! 지수법칙을 자신 있게 풀고 있네요.")
+    elif st.session_state.score >= 5:
+        st.write("좋아요! 조금만 더 연습하면 더 빨라질 거예요.")
+    else:
+        st.write("괜찮아요. 다시 풀면서 규칙을 익히면 금방 좋아집니다.")
+    if st.button("처음부터 다시 시작", use_container_width=True):
+        reset_quiz()
     st.stop()
 
 q = questions[st.session_state.index]
 
-st.markdown(f"<div class='score-box'><b>문제 {st.session_state.index + 1} / {len(questions)}</b> &nbsp;&nbsp; 현재 점수: <b>{st.session_state.score}</b></div>", unsafe_allow_html=True)
+st.markdown(
+    f'<div class="score-box"><div class="score-title">현재 점수</div><div class="score-value">{st.session_state.score}</div></div>',
+    unsafe_allow_html=True
+)
 
-st.subheader("문제를 보고 알맞은 답을 고르세요.")
+st.markdown(
+    f'<div class="progress-box">문제 {st.session_state.index + 1} / {len(questions)}</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown('<div class="question-card">', unsafe_allow_html=True)
+st.markdown("### 문제")
+st.write(q["text"])
 st.latex(q["latex"])
-
+st.markdown('<div class="small-guide">번호를 누르면 바로 채점됩니다.</div>', unsafe_allow_html=True)
 st.markdown("### 보기")
 
-labels = ["A", "B", "C", "D"]
-for i, opt in enumerate(q["options"]):
-    c1, c2 = st.columns([1, 6], vertical_alignment="center")
+for i, opt in enumerate(q["options"], start=1):
+    c1, c2 = st.columns([1.1, 8.9], gap="small")
     with c1:
-        st.markdown("<div class='option-btn'>", unsafe_allow_html=True)
-        st.button(labels[i], key=f"btn_{i}", on_click=choose, args=(opt,))
-        st.markdown("</div>", unsafe_allow_html=True)
+        pressed = st.button(str(i), key=f"opt_{st.session_state.index}_{i}", use_container_width=True)
     with c2:
-        prefix = "✅ " if st.session_state.selected == opt else ""
-        st.markdown(f"<div class='option-row'>{prefix}</div>", unsafe_allow_html=True)
         st.latex(opt)
+    if pressed:
+        check_answer(opt)
 
-if st.session_state.selected is not None:
-    st.info(f"선택한 답: {st.session_state.selected}")
-
-if st.button("제출하기", type="primary", use_container_width=True):
-    if st.session_state.selected is None:
-        st.warning("먼저 보기를 선택하세요.")
-    else:
-        st.session_state.submitted = True
-        if st.session_state.selected == q["answer"]:
-            st.session_state.score += 5
-            st.success("정답입니다! +5점")
-        else:
-            st.error(f"오답입니다. 정답은 {q['answer']} 입니다. -0점")
-        st.write("해설:", q["explanation"])
-
-        if st.button("다음 문제", use_container_width=True):
-            next_question()
-            st.rerun()
-
-if st.session_state.submitted:
-    if st.button("다음 문제로 이동", use_container_width=True):
-        next_question()
-        st.rerun()
-
+st.markdown('</div>', unsafe_allow_html=True)
