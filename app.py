@@ -6,9 +6,9 @@ st.set_page_config(page_title="지수법칙 퀴즈", page_icon="🎮", layout="c
 st.markdown("""
 <style>
 .block-container {
-    max-width: 860px;
-    padding-top: 0.6rem;
-    padding-bottom: 1rem;
+    max-width: 780px;
+    padding-top: 0.18rem;
+    padding-bottom: 0.3rem;
 }
 html, body, [data-testid="stAppViewContainer"] {
     background: linear-gradient(180deg, #fffef7 0%, #f8fbff 45%, #fdf2ff 100%);
@@ -18,53 +18,49 @@ html, body, [data-testid="stAppViewContainer"] {
     font-weight: 900;
     color: #7c3aed;
     background: linear-gradient(90deg, #f5f3ff, #eff6ff);
-    border: 2px solid #c4b5fd;
+    border: 1.5px solid #c4b5fd;
     border-radius: 999px;
-    padding: 0.38rem 0.8rem;
-    margin-bottom: 0.45rem;
-    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.10);
+    padding: 0.18rem 0.55rem;
+    margin-bottom: 0.2rem;
     font-size: 0.95rem;
 }
 .score-box {
     background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
     color: white;
-    padding: 0.7rem 1rem;
-    border-radius: 20px;
+    padding: 0.35rem 0.6rem;
+    border-radius: 14px;
     text-align: center;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.22);
-    border: 3px solid #ede9fe;
+    margin-bottom: 0.22rem;
+    border: 2px solid #ede9fe;
 }
 .score-title {
     font-size: 0.95rem;
     font-weight: 900;
-    letter-spacing: 0.03em;
 }
 .score-value {
     font-size: 2.3rem;
     font-weight: 900;
     line-height: 1.0;
-    margin-top: 0.1rem;
+    margin-top: 0.02rem;
     color: #fef08a;
 }
 .progress-box {
     background: linear-gradient(90deg, #fde68a, #fca5a5);
-    border: 2px solid #fb7185;
+    border: 1.5px solid #fb7185;
     color: #7c2d12;
-    padding: 0.55rem 0.8rem;
-    border-radius: 16px;
+    padding: 0.22rem 0.55rem;
+    border-radius: 11px;
     font-size: 1rem;
     font-weight: 900;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.22rem;
 }
 .question-card {
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    border: 3px solid #c4b5fd;
-    border-radius: 22px;
-    padding: 0.8rem 0.95rem 0.55rem 0.95rem;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 10px 20px rgba(168, 85, 247, 0.10);
+    border: 2px solid #c4b5fd;
+    border-radius: 16px;
+    padding: 0.38rem 0.55rem 0.28rem 0.55rem;
+    margin-bottom: 0.2rem;
 }
 .shake {
     animation: shake 0.35s ease-in-out 2;
@@ -72,69 +68,69 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 @keyframes shake {
     0% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
     100% { transform: translateX(0); }
 }
 .section-title {
     font-size: 1.5rem;
     font-weight: 900;
     color: #1e293b;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.02rem;
 }
 .guide-box {
     color: #334155;
     font-size: 0.92rem;
     font-weight: 800;
-    margin-top: 0.15rem;
-    margin-bottom: 0.35rem;
+    margin-top: 0.08rem;
+    margin-bottom: 0.18rem;
     background: linear-gradient(90deg, #ecfeff, #eff6ff);
-    border: 2px solid #93c5fd;
-    border-radius: 12px;
-    padding: 0.5rem 0.65rem;
+    border: 1.5px solid #93c5fd;
+    border-radius: 10px;
+    padding: 0.22rem 0.45rem;
 }
 .feedback-ok {
     background: linear-gradient(90deg, #dcfce7, #bbf7d0);
-    border: 2px solid #22c55e;
+    border: 1.5px solid #22c55e;
     color: #166534;
-    padding: 0.7rem;
-    border-radius: 14px;
+    padding: 0.38rem;
+    border-radius: 10px;
     font-size: 1.02rem;
     font-weight: 900;
     text-align: center;
-    margin-top: 0.45rem;
+    margin-top: 0.2rem;
 }
 .feedback-no {
     background: linear-gradient(90deg, #fee2e2, #fecaca);
-    border: 2px solid #ef4444;
+    border: 1.5px solid #ef4444;
     color: #991b1b;
-    padding: 0.7rem;
-    border-radius: 14px;
+    padding: 0.38rem;
+    border-radius: 10px;
     font-size: 1.02rem;
     font-weight: 900;
     text-align: center;
-    margin-top: 0.45rem;
+    margin-top: 0.2rem;
 }
 .explain-box {
     background: linear-gradient(90deg, #eff6ff, #eef2ff);
-    border: 2px solid #93c5fd;
+    border: 1.5px solid #93c5fd;
     color: #1e3a8a;
-    padding: 0.6rem 0.8rem;
-    border-radius: 12px;
-    margin-top: 0.4rem;
+    padding: 0.28rem 0.45rem;
+    border-radius: 9px;
+    margin-top: 0.15rem;
     font-size: 0.95rem;
     font-weight: 700;
 }
 .final-box {
     background: linear-gradient(135deg, #f43f5e, #8b5cf6, #0ea5e9);
     color: white;
-    padding: 1rem;
-    border-radius: 22px;
+    padding: 0.5rem;
+    border-radius: 16px;
     text-align: center;
-    border: 3px solid #ddd6fe;
-    margin-bottom: 0.7rem;
+    border: 2px solid #ddd6fe;
+    margin-bottom: 0.25rem;
 }
 .final-title {
     font-size: 1rem;
@@ -144,35 +140,37 @@ html, body, [data-testid="stAppViewContainer"] {
     font-size: 3rem;
     font-weight: 900;
     color: #fef08a;
-    line-height: 1.05;
-    margin-top: 0.15rem;
+    line-height: 1.0;
+    margin-top: 0.04rem;
 }
 .option-row {
     background: linear-gradient(90deg, #ffffff, #faf5ff);
-    border: 2px solid #e9d5ff;
-    border-radius: 16px;
-    padding: 0.15rem 0.45rem;
-    margin-bottom: 0.35rem;
-    box-shadow: 0 4px 10px rgba(168, 85, 247, 0.05);
+    border: 1.5px solid #e9d5ff;
+    border-radius: 11px;
+    padding: 0.04rem 0.24rem;
+    margin-bottom: 0.14rem;
 }
 div.stButton > button {
     width: 100%;
-    min-height: 44px;
-    font-size: 1rem;
+    min-height: 34px;
+    font-size: 0.95rem;
     font-weight: 900;
-    border-radius: 14px;
-    border: 2px solid #cbd5e1;
+    border-radius: 9px;
+    border: 1.5px solid #cbd5e1;
     background: linear-gradient(180deg, #ffffff, #f8fafc);
-    padding: 0.1rem 0.2rem;
+    padding: 0rem 0.1rem;
 }
 div.stButton > button:hover {
-    border: 2px solid #a855f7;
+    border: 1.5px solid #a855f7;
     color: #7c3aed;
     background: linear-gradient(180deg, #fdf4ff, #f5f3ff);
 }
 div[data-testid="stLatex"] {
     margin-top: -0.2rem;
     margin-bottom: -0.2rem;
+}
+p {
+    margin-bottom: 0.08rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -256,12 +254,6 @@ if st.session_state.finished:
     st.markdown('<div class="maker-badge">이송원 선생님 제작</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="final-box"><div class="final-title">🏆 최종 점수</div><div class="final-score">{st.session_state.score}</div></div>', unsafe_allow_html=True)
     st.success("퀴즈를 모두 마쳤습니다!")
-    if st.session_state.score >= 120:
-        st.write("반짝반짝! 정말 잘했어요.")
-    elif st.session_state.score >= 60:
-        st.write("좋아요! 조금만 더 연습하면 더 빨라질 거예요.")
-    else:
-        st.write("괜찮아요. 다시 풀면서 규칙을 익히면 금방 좋아집니다.")
     if st.button("처음부터 다시 시작", use_container_width=True):
         reset_quiz()
     st.stop()
@@ -285,11 +277,11 @@ if st.session_state.shake:
     st.rerun()
 
 st.markdown('<div class="guide-box">번호를 누르면 바로 채점됩니다.</div>', unsafe_allow_html=True)
-st.markdown('<div class="section-title" style="font-size:1.35rem; margin-top:0.15rem;">보기</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-title" style="font-size:1.35rem; margin-top:0.02rem;">보기</div>', unsafe_allow_html=True)
 
 for i, opt in enumerate(q["options"], start=1):
     st.markdown('<div class="option-row">', unsafe_allow_html=True)
-    c1, c2 = st.columns([1.05, 4.95], gap="small")
+    c1, c2 = st.columns([1.0, 5.0], gap="small")
     with c1:
         pressed = st.button(str(i), key=f"opt_{st.session_state.index}_{i}", use_container_width=True)
     with c2:
