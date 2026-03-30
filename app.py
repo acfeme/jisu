@@ -1,3 +1,4 @@
+
 import time
 import streamlit as st
 
@@ -12,17 +13,6 @@ st.markdown("""
 }
 html, body, [data-testid="stAppViewContainer"] {
     background: linear-gradient(180deg, #fffef7 0%, #f8fbff 45%, #fdf2ff 100%);
-}
-.maker-badge {
-    text-align: center;
-    font-weight: 900;
-    color: #7c3aed;
-    background: linear-gradient(90deg, #f5f3ff, #eff6ff);
-    border: 1.5px solid #c4b5fd;
-    border-radius: 999px;
-    padding: 0.18rem 0.55rem;
-    margin-bottom: 0.2rem;
-    font-size: 0.95rem;
 }
 .score-box {
     background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
@@ -62,16 +52,15 @@ html, body, [data-testid="stAppViewContainer"] {
     padding: 0.38rem 0.55rem 0.28rem 0.55rem;
     margin-bottom: 0.2rem;
 }
-.shake {
-    animation: shake 0.35s ease-in-out 2;
-    border-color: #f87171 !important;
+.screen-shake {
+    animation: screenShake 0.35s ease-in-out 2;
 }
-@keyframes shake {
+@keyframes screenShake {
     0% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
     100% { transform: translateX(0); }
 }
 .section-title {
@@ -79,6 +68,13 @@ html, body, [data-testid="stAppViewContainer"] {
     font-weight: 900;
     color: #1e293b;
     margin-bottom: 0.02rem;
+}
+.maker-text {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #111827;
+    margin-top: 0.05rem;
+    margin-bottom: 0.1rem;
 }
 .guide-box {
     color: #334155;
@@ -235,6 +231,7 @@ def check_answer(selected_option: str):
         gain = 0 if idx in st.session_state.wrong_questions else 5
         st.session_state.score += gain
         msg = "🎉 정답입니다! +5점" if gain == 5 else "😊 정답입니다! 하지만 이 문제는 이미 틀려서 점수는 추가되지 않습니다."
+        st.balloons()
         st.markdown(f'<div class="feedback-ok">{msg}</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="explain-box">해설: {q["explanation"]}</div>', unsafe_allow_html=True)
         time.sleep(1.0)
@@ -251,7 +248,6 @@ def check_answer(selected_option: str):
         st.rerun()
 
 if st.session_state.finished:
-    st.markdown('<div class="maker-badge">이송원 선생님 제작</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="final-box"><div class="final-title">🏆 최종 점수</div><div class="final-score">{st.session_state.score}</div></div>', unsafe_allow_html=True)
     st.success("퀴즈를 모두 마쳤습니다!")
     if st.button("처음부터 다시 시작", use_container_width=True):
@@ -260,13 +256,13 @@ if st.session_state.finished:
 
 q = questions[st.session_state.index]
 
-st.markdown('<div class="maker-badge">이송원 선생님 제작</div>', unsafe_allow_html=True)
+st.markdown('<div class="screen-shake">' if st.session_state.shake else '<div>', unsafe_allow_html=True)
 st.markdown(f'<div class="score-box"><div class="score-title">🌟 현재 점수</div><div class="score-value">{st.session_state.score}</div></div>', unsafe_allow_html=True)
 st.markdown(f'<div class="progress-box">🎯 문제 {st.session_state.index + 1} / {len(questions)}</div>', unsafe_allow_html=True)
 
-shake_class = "shake" if st.session_state.shake else ""
-st.markdown(f'<div class="question-card {shake_class}">', unsafe_allow_html=True)
+st.markdown(f'<div class="question-card">', unsafe_allow_html=True)
 st.markdown('<div class="section-title">문제</div>', unsafe_allow_html=True)
+st.markdown('<div class="maker-text">이송원 선생님 제작</div>', unsafe_allow_html=True)
 st.latex(q["latex"])
 
 if st.session_state.shake:
@@ -290,4 +286,5 @@ for i, opt in enumerate(q["options"], start=1):
     if pressed:
         check_answer(opt)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div></div>', unsafe_allow_html=True)
+
